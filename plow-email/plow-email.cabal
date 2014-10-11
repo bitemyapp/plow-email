@@ -1,0 +1,35 @@
+Name:                   plow-email
+Version:                0.1.0
+Author:                 Scott <scott.murphy@plowtech.net>
+Maintainer:             Scott <scott.murphy@plowtech.net>
+License:                BSD3
+License-File:           LICENSE
+Synopsis:               Email system that takes advantage of shakespeare for super cool templates
+Description:            Why rent when you an buy 
+Cabal-Version:          >= 1.10
+Build-Type:             Simple
+
+Library
+  Default-Language:     Haskell2010
+  HS-Source-Dirs:       src
+  GHC-Options:          -Wall
+  Exposed-Modules:      Plow.Email
+  Other-Modules:        Plow.Email.Internal
+  Build-Depends:        base >= 4 && < 5
+                      , lens >= 4.4 && < 4.5
+                      , basic-prelude >= 0.3.9 && < 0.4.0
+                      , mime-mail 
+                      , smtp-mail
+Test-Suite spec
+  Type:                 exitcode-stdio-1.0
+  Default-Language:     Haskell2010
+  Hs-Source-Dirs:       src
+                      , test
+  Ghc-Options:          -Wall
+  Main-Is:              Spec.hs
+  Build-Depends:        base
+                      , hspec
+
+Source-Repository head
+  Type:                 git
+  Location:             https://github.com/plow-technologies/plow-email.git
