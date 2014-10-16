@@ -14,17 +14,20 @@ Portability :   non-portable (System.Posix)
 
 
 {-# LANGUAGE OverloadedStrings #-}
-
-
 {-# LANGUAGE QuasiQuotes           #-}
 {-# LANGUAGE TemplateHaskell       #-}
 {-# LANGUAGE TypeFamilies          #-}
+
 module Plow.Email.Server () where
 
 
 
 
 import           Yesod
+import Data.Aeson
+import Data.Aeson.Lens
+import Alarm.Log.Types (EventEntries)
+
 
 data MailFoundation = MailFoundation
 
@@ -33,7 +36,7 @@ mkYesod "MailFoundation" [parseRoutes|
 /email EmailR POST
 |]
 
-instance Yesod HelloWorld
+instance Yesod MailFoundation
 
 getHomeR :: Handler Html
 getHomeR = defaultLayout [whamlet|Email
@@ -42,9 +45,8 @@ getHomeR = defaultLayout [whamlet|Email
 
 postEmailR :: Handler Value
 postEmailR = do
-   var <- parseJsonBody :: Handler Value
-   return . toJSON $ var
-  
-main :: IO ()
-main = warp 3000 HelloWorld
+   var <- parseJsonBody :: Handler (Result [EventEntries])
+   case var of
+     (Error f) -> return . toJSON $ f
+     (Success s) -> return . toJSON $ s
 

@@ -15,6 +15,7 @@ Library
   HS-Source-Dirs:       src
   GHC-Options:          -Wall
   Exposed-Modules:      Plow.Email.Server
+  Other-Modules:        Plow.Email.Lens
   Build-Depends:        base >= 4 && < 5
                       , lens >= 4.4 && < 4.5
                       , basic-prelude >= 0.3.9 && < 0.4.0
@@ -25,8 +26,9 @@ Library
                       , validation
                       , bytestring
                       , shakespeare     
-                      , alarm-log-adapter == 0.1.7
-                      , alarm-log-types     
+                      , aeson
+                      , lens-aeson
+                      , alarm-log-types  >= 0.4
 
 
 Test-Suite spec
@@ -46,7 +48,8 @@ Test-Suite spec
                       , yesod 
                       , shakespeare
                       , alarm-log-types 
-
+                      , aeson
+                      , lens-aeson
 
 Source-Repository head
   Type:                 git
