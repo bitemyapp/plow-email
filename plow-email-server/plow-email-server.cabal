@@ -1,5 +1,5 @@
 Name:                   plow-email-server
-Version:                0.0.0
+Version:                0.1.0
 Author:                 Scott <scott.murphy@plowtech.net>
 Maintainer:             Scott <scott.murphy@plowtech.net>
 License:                BSD3
@@ -14,12 +14,13 @@ Library
   HS-Source-Dirs:       src
   GHC-Options:          -Wall
   Exposed-Modules:      Plow.Email.Server
-  Other-Modules:        Plow.Email.Server.Internal
   Build-Depends:        base >= 4 && < 5
                       , lens >= 4.4 && < 4.5
                       , basic-prelude >= 0.3.9 && < 0.4.0
                       , mime-mail 
-                      , smtp-mail
+                      , HaskellNet
+                      , HaskellNet-SSL
+                      , validation
 
 Test-Suite spec
   Type:                 exitcode-stdio-1.0
@@ -30,7 +31,10 @@ Test-Suite spec
   Main-Is:              Spec.hs
   Build-Depends:        base
                       , hspec
-
+                      , mime-mail 
+                      , HaskellNet
+                      , HaskellNet-SSL
+                      , validation
 Source-Repository head
   Type:                 git
 --  Location:             

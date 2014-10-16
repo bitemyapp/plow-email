@@ -19,7 +19,8 @@ Library
                       , lens >= 4.4 && < 4.5
                       , basic-prelude >= 0.3.9 && < 0.4.0
                       , mime-mail 
-                      , smtp-mail
+                      , HaskellNet
+                      , HaskellNet-SSL
 Test-Suite spec
   Type:                 exitcode-stdio-1.0
   Default-Language:     Haskell2010
@@ -29,7 +30,8 @@ Test-Suite spec
   Main-Is:              Spec.hs
   Build-Depends:        base
                       , hspec
-
+                      , HaskellNet
+                      , HaskellNet-SSL
 Source-Repository head
   Type:                 git
   Location:             https://github.com/plow-technologies/plow-email.git
