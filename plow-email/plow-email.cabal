@@ -21,6 +21,7 @@ Library
                       , mime-mail 
                       , HaskellNet
                       , HaskellNet-SSL
+                      , bytestring
 Test-Suite spec
   Type:                 exitcode-stdio-1.0
   Default-Language:     Haskell2010
@@ -32,6 +33,8 @@ Test-Suite spec
                       , hspec
                       , HaskellNet
                       , HaskellNet-SSL
+                      , bytestring
+
 Source-Repository head
   Type:                 git
   Location:             https://github.com/plow-technologies/plow-email.git

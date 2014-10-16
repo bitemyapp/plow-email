@@ -5,10 +5,13 @@ module Plow.Email.ServerSpec (main, spec) where
 import Test.Hspec
 import Network.HaskellNet.SMTP (Command (..) , sendMail, sendCommand)
 import Network.HaskellNet.Auth (plain, AuthType (..))
-import Network.HaskellNet.SMTP.SSL 
+import Network.HaskellNet.SMTP.SSL
 import Network.HaskellNet.SSL (defaultSettingsWithPort)
 
 
+
+import Data.ByteString.Lazy (toStrict)
+import Network.Mail.Mime
 
 main :: IO ()
 main = hspec spec
@@ -21,32 +24,21 @@ spec = do
       True `shouldBe` False
 
 
+exampleToAddress :: Address
+exampleToAddress = Address (Just "Scott Murphy ") "scottmurphy09@gmail.com"
 
+exampleFromAddress :: Address
+exampleFromAddress = Address (Just "Alarms") "alarms@plowtech.net"
 
-
-
--- exampleToAddress :: Address
--- exampleToAddress = Address (Just "Scott Murphy ") "scottmurphy09@gmail.com"
-
--- exampleFromAddress :: Address
--- exampleFromAddress = Address (Just "Alarms") "alarms@plowtech.net"
-
--- --testTextPart :: Part
--- testTextPart = plainTextPart "Howdy Partner"
-
--- --testSimpleMail :: Mail
--- testSimpleMail =  simpleMail exampleFromAddress [exampleToAddress] [] [] "Clear This out " [testTextPart] 
-
-
--- -- sendMailWithLogin' :: HostName -> PortNumber -> UserName -> Password -> Mail -> IO (
--- testSendMail = sendMailWithLogin' "smtp.gmail.com" 465 "alarms@plowtech.net" "wnpcq4edtr8k5mz" testSimpleMail 
+testSimpleMail :: IO Mail
+testSimpleMail =  simpleMail exampleToAddress exampleFromAddress "cowboy" "here is the plain body" "<H1>Trial </H1>"  []
 
   
-
 testConnectGmailSmtp = do  
   connection <- connectSMTPSSLWithSettings "smtp.gmail.com" (defaultSettingsWithPort 465)
+  rm <- renderMail' =<< testSimpleMail
   sendCommand connection  (AUTH LOGIN "alarms@plowtech.net" "jk8kmyh4tv3cx4t")
-  sendMail  "alarms@plowtech.net" ["scottmurphy09@gmail.com"]  "This is a test" connection
+  sendMail  "alarms@plowtech.net" ["scottmurphy09@gmail.com"]  (toStrict rm)  connection
   
   
        

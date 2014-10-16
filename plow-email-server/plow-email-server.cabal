@@ -6,6 +6,7 @@ License:                BSD3
 License-File:           LICENSE
 -- Synopsis:               
 -- Description:            
+
 Cabal-Version:          >= 1.10
 Build-Type:             Simple
 
@@ -17,10 +18,16 @@ Library
   Build-Depends:        base >= 4 && < 5
                       , lens >= 4.4 && < 4.5
                       , basic-prelude >= 0.3.9 && < 0.4.0
+                      , yesod 
                       , mime-mail 
                       , HaskellNet
                       , HaskellNet-SSL
                       , validation
+                      , bytestring
+                      , shakespeare     
+                      , alarm-log-adapter == 0.1.7
+                      , alarm-log-types     
+
 
 Test-Suite spec
   Type:                 exitcode-stdio-1.0
@@ -35,6 +42,12 @@ Test-Suite spec
                       , HaskellNet
                       , HaskellNet-SSL
                       , validation
+                      , bytestring
+                      , yesod 
+                      , shakespeare
+                      , alarm-log-types 
+
+
 Source-Repository head
   Type:                 git
 --  Location:             
