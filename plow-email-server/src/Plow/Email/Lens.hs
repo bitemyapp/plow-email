@@ -14,15 +14,28 @@ Portability :   non-portable (System.Posix)
 
 
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TemplateHaskell #-}
 
-module Plow.Email.Lens () where
+module Plow.Email.Lens ( stateChangeTime_
+                       , stateChangeMsg_
+                       , eventEntries_
+                       , entryKey_
+                       , _EventStateChange
+                       ) where
 
 
 import Control.Lens
-import Data.Aeson.Lens
 
 
--- import Plow.Extras.Lens
-import Alarm.Log.Types 
+
+import Plow.Extras.Lens (makeLenses_)
+import Alarm.Log.Adapter
 
 
+
+-- _eventEntries is defined in the Log Types so just use it
+
+makeLenses_ ''StateChange
+makeLenses_ ''EventEntries
+
+makePrisms  ''LogEvent 

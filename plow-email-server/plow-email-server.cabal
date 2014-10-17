@@ -17,18 +17,52 @@ Library
   Exposed-Modules:      Plow.Email.Server
   Other-Modules:        Plow.Email.Lens
   Build-Depends:        base >= 4 && < 5
+                      , alarm-log-adapter >= 0.2.1	
                       , lens >= 4.4 && < 4.5
-                      , basic-prelude >= 0.3.9 && < 0.4.0
-                      , yesod 
-                      , mime-mail 
-                      , HaskellNet
-                      , HaskellNet-SSL
-                      , validation
-                      , bytestring
-                      , shakespeare     
+                      , alarm-state-types >= 0.1.0
+                      , mime-mail >= 0.4.5.2
+                      , yesod-core >= 1.4.2
+                      , HaskellNet >= 0.4
+                      , HaskellNet-SSL >= 0.2.5.1
+                      , bytestring >= 0.10.4.0
+                      , shakespeare  >= 2.0.1.1
+                      , shakespeare-templates  >= 0.0.1
                       , aeson
+                      , text 
+                      , containers
                       , lens-aeson
-                      , alarm-log-types  >= 0.4
+                      , plow-extras-lens >= 0.1.1
+
+
+
+
+Executable plowemail
+   main-is:            Main.hs
+   HS-Source-Dirs:     src
+
+
+   build-depends:        base
+                       , lens
+                       , alarm-log-adapter 
+                       , yesod-core
+                       , mime-mail 
+                       , HaskellNet
+                       , HaskellNet-SSL
+                       , validation
+                       , bytestring
+                       , shakespeare     
+                       , shakespeare-templates 
+                       , aeson
+                       , text
+                       , containers
+                       , lens-aeson
+                       , plow-extras-lens 
+                       , alarm-state-types
+
+
+   default-language:  Haskell2010
+   ghc-options:       -threaded -O2 -rtsopts -Wall 
+
 
 
 Test-Suite spec
@@ -45,11 +79,15 @@ Test-Suite spec
                       , HaskellNet-SSL
                       , validation
                       , bytestring
+                      , alarm-state-types 
                       , yesod 
                       , shakespeare
+                      , shakespeare-templates
                       , alarm-log-types 
                       , aeson
+                      , plow-extras-lens 
                       , lens-aeson
+                      , containers
 
 Source-Repository head
   Type:                 git
