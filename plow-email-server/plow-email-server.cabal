@@ -4,8 +4,8 @@ Author:                 Scott <scott.murphy@plowtech.net>
 Maintainer:             Scott <scott.murphy@plowtech.net>
 License:                BSD3
 License-File:           LICENSE
--- Synopsis:               
--- Description:            
+Synopsis:               Email server for sending email   
+Description:            Email Server for sending email
 
 Cabal-Version:          >= 1.10
 Build-Type:             Simple
@@ -31,12 +31,11 @@ Library
                       , text 
                       , containers
                       , lens-aeson
+                      , alarm-state-types
                       , time
                       , plow-extras-lens >= 0.1.1
                       , plow-extras-time >= 0.1.1
-                      , alarm-db-keys
-                      , directed-keys
-
+  
 
 
 
@@ -60,12 +59,11 @@ Executable plowemail
                        , text
                        , containers
                        , lens-aeson
+                       , alarm-state-types
                        , time
                        , plow-extras-lens 
                        , plow-extras-time
-                       , alarm-state-types
-                       , alarm-db-keys
-                       , directed-keys
+               
 
 
    default-language:  Haskell2010
@@ -93,11 +91,17 @@ Test-Suite spec
                       , shakespeare-templates
                       , alarm-log-types 
                       , aeson
+                      , text
                       , plow-extras-lens 
                       , plow-extras-time
+                      , time
+                      , lens
                       , lens-aeson
+                      , alarm-log-adapter
                       , containers
+                      , alarm-db-keys
+                      , directed-keys
 
 Source-Repository head
   Type:                 git
---  Location:             
+  Location:             git@github.com:plow-technologies/plow-email.git
