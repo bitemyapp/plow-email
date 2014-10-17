@@ -1,7 +1,7 @@
 import Plow.Email.Server
 
 
-import Yesod.Core
+import Yesod
 
 
 main = startServer MailFoundation

@@ -45,7 +45,7 @@ import Plow.Email.Lens (stateChangeMsg_ , eventEntries_ , _EventStateChange)
 import Prelude hiding (concat)
 import Text.Hamlet
 import Text.Shakespeare.Template
-import Yesod.Core
+import Yesod
 data MailFoundation = MailFoundation
 
 mkYesod "MailFoundation" [parseRoutes|
@@ -83,7 +83,7 @@ postEmailR = do
    case var of
      (Error f) -> return . toJSON $ f
      (Success s) -> do
-       connection <- liftIO $ connectSMTPSSLWithSettings "smtp.gmail.com" (defaultSettingsWithPort 465)
+        connection <- liftIO $ connectSMTPSSLWithSettings "smtp.gmail.com" (defaultSettingsWithPort 465)
        let eventList = s ^.. (traverse . eventEntries_ .folded ) :: [AlarmLogEvent]
            msgTxt = eventList ^.. (traverse  . _EventStateChange . stateChangeMsg_ )  
            ar = catMaybes $ (decodeAR) <$> msgTxt

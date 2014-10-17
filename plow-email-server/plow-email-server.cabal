@@ -21,7 +21,7 @@ Library
                       , lens >= 4.4 && < 4.5
                       , alarm-state-types >= 0.1.0
                       , mime-mail >= 0.4.5.2
-                      , yesod-core >= 1.4.2
+                      , yesod
                       , HaskellNet >= 0.4
                       , HaskellNet-SSL >= 0.2.5.1
                       , bytestring >= 0.10.4.0
@@ -44,7 +44,7 @@ Executable plowemail
    build-depends:        base
                        , lens
                        , alarm-log-adapter 
-                       , yesod-core
+                       , yesod
                        , mime-mail 
                        , HaskellNet
                        , HaskellNet-SSL
