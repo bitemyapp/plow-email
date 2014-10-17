@@ -21,7 +21,7 @@ Library
                       , lens >= 4.4 && < 4.5
                       , alarm-state-types >= 0.1.0
                       , mime-mail >= 0.4.5.2
-                      , yesod
+                      , yesod    >= 1.2.4 && < 1.4
                       , HaskellNet >= 0.4
                       , HaskellNet-SSL >= 0.2.5.1
                       , bytestring >= 0.10.4.0
@@ -31,7 +31,11 @@ Library
                       , text 
                       , containers
                       , lens-aeson
+                      , time
                       , plow-extras-lens >= 0.1.1
+                      , plow-extras-time >= 0.1.1
+                      , alarm-db-keys
+                      , directed-keys
 
 
 
@@ -56,8 +60,12 @@ Executable plowemail
                        , text
                        , containers
                        , lens-aeson
+                       , time
                        , plow-extras-lens 
+                       , plow-extras-time
                        , alarm-state-types
+                       , alarm-db-keys
+                       , directed-keys
 
 
    default-language:  Haskell2010
@@ -86,6 +94,7 @@ Test-Suite spec
                       , alarm-log-types 
                       , aeson
                       , plow-extras-lens 
+                      , plow-extras-time
                       , lens-aeson
                       , containers
 
