@@ -5,6 +5,9 @@ machine:
   environment:
     PATH: $HOME/.cabal/bin:$CIRCLE_ARTIFACTS:$PATH/$HOME/plow-email/plow-email-server/.cabal-sandbox/bin
 
+general:
+  build_dir: plow-email-server
+
 dependencies:
   cache_directories:
     - "~/.cabal"
