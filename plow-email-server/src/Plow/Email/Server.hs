@@ -31,7 +31,8 @@ import           Control.Applicative         ((<$>))
 import           Control.Exception           (SomeException, try)
 import           Control.Monad               (void)
 import           Data.Maybe                  (catMaybes)
-import           Data.Text                   (Text, unpack)
+import           Data.Monoid                 ((<>))
+import           Data.Text                   (Text, pack, unpack)
 import           Data.Text.Lazy              (fromStrict)
 import           Data.Text.Lazy.Encoding     (encodeUtf8)
 import           Data.Time.LocalTime
@@ -73,11 +74,22 @@ exampleToAddress = Address (Just "Scott Murphy ") "scottmurphy09@gmail.com"
 exampleFromAddress :: Address
 exampleFromAddress = Address (Just "Alarms") "alarms@plowtech.net"
 
+statusHumanReable :: AnyAlarm -> String
+statusHumanReable status =
+                  case status of
+                  (SClear s) -> show s
+                  (SClearing s) -> show s
+                  (STripped s) -> show s
+                  (STripping s) -> show s
+
+
+buildEmailSubject :: AlarmEmailTemplate -> Text
+buildEmailSubject aet =  aetName aet <>  (" "::Text) <>  (pack . statusHumanReable $ aetStatus aet)
 
 processMailList :: AlarmEmailTemplate -> Text -> IO Mail
 processMailList aet email = do
   tz <- getCurrentTimeZone
-  sMail <- simpleMail exampleFromAddress to' "Alarm System Email"  "here is the plain body" (hamletToText $ alarmMailTemplate aet tz )  []
+  sMail <- simpleMail exampleFromAddress to' (buildEmailSubject aet)  "here is the plain body" (hamletToText $ alarmMailTemplate aet tz )  []
   return $ sMail {mailTo=to':[]}
     where
       to' = Address Nothing email
@@ -163,6 +175,7 @@ alarmMailTemplate :: AlarmEmailTemplate -> TimeZone -> t-> Html
 alarmMailTemplate  (AET at' an as _ppl) tz = do
   let utc' = intToUTCTime at'
       localTime = show $ utcToLocalTime tz utc'
+      status = statusHumanReable as
   [hamlet|
 <h3> Plow Technologies Alarm System </h3>
 <table>
@@ -173,6 +186,6 @@ alarmMailTemplate  (AET at' an as _ppl) tz = do
     <tr>
       <td> #{ localTime }
       <td> #{ an }
-      <td> #{show as }
+      <td> #{ status }
 
 |]
