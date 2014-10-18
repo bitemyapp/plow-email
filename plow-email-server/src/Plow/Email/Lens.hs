@@ -2,11 +2,11 @@
 
 {- |
 Module      :  Plow.Email.Lens
-Description :  Plow.Email.Lens 
+Description :  Plow.Email.Lens
 Copyright   :  (c) Plow Technologies
 License     :  MIT License
 Maintainer  :  Scott Murphy
-Stability   :  unstable 
+Stability   :  unstable
 Portability :   non-portable (System.Posix)
 
 
@@ -14,7 +14,7 @@ Portability :   non-portable (System.Posix)
 
 
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TemplateHaskell   #-}
 
 module Plow.Email.Lens ( stateChangeTime_
                        , stateChangeMsg_
@@ -24,18 +24,13 @@ module Plow.Email.Lens ( stateChangeTime_
                        ) where
 
 
-import Control.Lens
-
-
-
-import Plow.Extras.Lens (makeLenses_)
-import Alarm.Log.Adapter
-
-
+import           Alarm.Log.Adapter
+import           Control.Lens
+import           Plow.Extras.Lens  (makeLenses_)
 
 -- _eventEntries is defined in the Log Types so just use it
 
 makeLenses_ ''StateChange
 makeLenses_ ''EventEntries
 
-makePrisms  ''LogEvent 
+makePrisms  ''LogEvent

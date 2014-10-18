@@ -1,5 +1,4 @@
 
-
 {- |
 Module      :  Plow.Email.Server
 Description :  Plow.Email sends quick emails
@@ -8,8 +7,6 @@ License     :  MIT License
 Maintainer  :  Scott Murphy
 Stability   :  unstable
 Portability :   non-portable (System.Posix)
-
-
 -}
 
 {-# LANGUAGE NoImplicitPrelude   #-}
@@ -21,8 +18,6 @@ Portability :   non-portable (System.Posix)
 {-# LANGUAGE TypeFamilies        #-}
 module Plow.Email.Server  where
 
-import           Alarm.Log.Adapter
-import           AlarmState.Types
 import           Control.Lens
 import           Data.Aeson
 import           Data.ByteString.Lazy        (toStrict)
@@ -35,7 +30,6 @@ import           Data.Monoid                 ((<>))
 import           Data.Text                   (Text, pack, unpack)
 import           Data.Text.Lazy              (fromStrict)
 import           Data.Text.Lazy.Encoding     (encodeUtf8)
-import           Data.Time.LocalTime
 import           Network.HaskellNet.Auth     (AuthType (..))
 import           Network.HaskellNet.SMTP     (Command (..), SMTPConnection,
                                               sendCommand, sendMail)
@@ -44,11 +38,11 @@ import           Network.HaskellNet.SSL      (defaultSettingsWithPort)
 import           Network.Mail.Mime
 import           Plow.Email.Lens             (eventEntries_, stateChangeMsg_,
                                               _EventStateChange)
-import           Plow.Extras.Time            (intToUTCTime)
+import           Plow.Email.MailTemplate
+import           Plow.Email.Types
 import           Prelude                     hiding (concat)
 import           System.IO                   (hPrint, stderr)
-import           Text.Hamlet
-import           Text.Shakespeare.Template
+
 import           Yesod
 
 ePrint :: Show a => a -> IO ()
@@ -68,28 +62,13 @@ getHomeR = defaultLayout [whamlet|Email
                                   Server|]
 
 
-exampleToAddress :: Address
-exampleToAddress = Address (Just "Scott Murphy ") "scottmurphy09@gmail.com"
-
-exampleFromAddress :: Address
-exampleFromAddress = Address (Just "Alarms") "alarms@plowtech.net"
-
-statusHumanReable :: AnyAlarm -> String
-statusHumanReable status =
-                  case status of
-                  (SClear s) -> show s
-                  (SClearing s) -> show s
-                  (STripped s) -> show s
-                  (STripping s) -> show s
-
-
 buildEmailSubject :: AlarmEmailTemplate -> Text
 buildEmailSubject aet =  aetName aet <>  (" "::Text) <>  (pack . statusHumanReable $ aetStatus aet)
 
 processMailList :: AlarmEmailTemplate -> Text -> IO Mail
 processMailList aet email = do
   tz <- getCurrentTimeZone
-  sMail <- simpleMail exampleFromAddress to' (buildEmailSubject aet)  "here is the plain body" (hamletToText $ alarmMailTemplate aet tz )  []
+  sMail <- simpleMail defaultFromAddress to' (buildEmailSubject aet)  "here is the plain body" (hamletToText $ alarmMailTemplate aet tz )  []
   return $ sMail {mailTo=to':[]}
     where
       to' = Address Nothing email
@@ -136,12 +115,6 @@ postEmailR = do
                   return . toJSON $ s
 
 
-data AlarmEmailTemplate = AET
-                           { aetTime   :: Int,
-                             aetName   :: Text,
-                             aetStatus :: AnyAlarm,
-                             mailPPL   :: [Text] }
-                           deriving (Show)
 
 fetchAlarmRunnerStuff
   :: AlarmRunner AnyAlarm c ct -> AlarmEmailTemplate
@@ -155,37 +128,4 @@ fetchAlarmRunnerStuff (AlarmRunner { alarmTime = at'
      | otherwise =  a
 
 
-alarmMailTemplates ::[AlarmEmailTemplate] -> t -> Html
-alarmMailTemplates  ars = [hamlet|
-<h3> Plow Technologies Alarm System </h3>
-<table>
-  <tr>
-    <th> Alarm Time
-    <th> Alarm Name
-    <th> Alarm State
-  $forall   (AET at an as _ppl) <- ars
-    <tr>
-      <td> #{ at }
-      <td> #{ an}
-      <td> #{show as }
 
-|]
-
-alarmMailTemplate :: AlarmEmailTemplate -> TimeZone -> t-> Html
-alarmMailTemplate  (AET at' an as _ppl) tz = do
-  let utc' = intToUTCTime at'
-      localTime = show $ utcToLocalTime tz utc'
-      status = statusHumanReable as
-  [hamlet|
-<h3> Plow Technologies Alarm System </h3>
-<table>
-  <tr>
-    <th> Alarm Time
-    <th> Alarm Name
-    <th> Alarm State
-    <tr>
-      <td> #{ localTime }
-      <td> #{ an }
-      <td> #{ status }
-
-|]
