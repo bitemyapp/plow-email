@@ -79,7 +79,7 @@ processAlarmEmailTemplate aet  = traverse (processMailList aet)
 decodeAR :: Text -> Maybe (AlarmRunner AnyAlarm AnyCall AnyCount)
 decodeAR = decode.encodeUtf8.fromStrict
 
-processAlarmRunner :: AlarmRunner AnyAlarm c ct -> SMTPConnection -> IO ()
+processAlarmRunner :: AlarmRunner AnyAlarm AnyCall ct -> SMTPConnection -> IO ()
 processAlarmRunner ar connection = do
   let at' = fetchAlarmRunnerStuff ar
   let froms = mailPPL at'
@@ -117,10 +117,10 @@ postEmailR = do
 
 
 fetchAlarmRunnerStuff
-  :: AlarmRunner AnyAlarm c ct -> AlarmEmailTemplate
+  :: AlarmRunner AnyAlarm AnyCall ct -> AlarmEmailTemplate
 fetchAlarmRunnerStuff (AlarmRunner { alarmTime = at'
                                    , alarmState = st
-                                   , alarmParameters = ap, .. }) = AET at' (message ap) (alarm st) (getTo.getPeople.callList $  ap)
+                                   , alarmParameters = ap, .. }) = AET at' (message ap) (alarm st) (getTo.getPeople.callList $ ap) (email . person $ st) (call st)
   where
     getTo = foldl fldFcn []
     fldFcn a b

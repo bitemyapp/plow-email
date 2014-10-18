@@ -19,6 +19,8 @@ module Plow.Email.Types (  module Alarm.Log.Adapter
                          , aetTime
                          , aetName
                          , aetStatus
+                         , aetCallPerson
+                         , aetCallStatus
                          , mailPPL
                          , defaultToAddress
                          , defaultFromAddress
@@ -37,8 +39,10 @@ defaultFromAddress :: Address
 defaultFromAddress = Address (Just "Alarms") "alarms@plowtech.net"
 
 data AlarmEmailTemplate = AET
-                           { aetTime   :: Int,
-                             aetName   :: Text,
-                             aetStatus :: AnyAlarm,
-                             mailPPL   :: [Text] }
+                           { aetTime       :: Int,
+                             aetName       :: Text,
+                             aetStatus     :: AnyAlarm,
+                             mailPPL       :: [Text],
+                             aetCallPerson :: Text,
+                             aetCallStatus :: AnyCall}
                            deriving (Show)

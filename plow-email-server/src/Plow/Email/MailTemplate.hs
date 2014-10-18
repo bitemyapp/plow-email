@@ -15,7 +15,6 @@ Portability :   non-portable
 
 module Plow.Email.MailTemplate ( alarmMailTemplate
                                , statusHumanReable
-                               , alarmMailTemplates
                                , hamletToText
                                , getCurrentTimeZone
                                ) where
@@ -36,24 +35,8 @@ statusHumanReable status =
                   (STripping s) -> show s
 
 
-alarmMailTemplates ::[AlarmEmailTemplate] -> t -> Html
-alarmMailTemplates ars = [hamlet|
-<h3> Plow Technologies Alarm System </h3>
-<table>
-  <tr>
-    <th> Alarm Time
-    <th> Alarm Name
-    <th> Alarm State
-  $forall   (AET at an as _ppl) <- ars
-    <tr>
-      <td> #{ at }
-      <td> #{ an}
-      <td> #{show as }
-
-|]
-
-alarmMailTemplate :: AlarmEmailTemplate -> TimeZone -> t-> Html
-alarmMailTemplate  (AET at' an as _ppl) tz = do
+alarmMailTemplate :: AlarmEmailTemplate -> TimeZone -> t -> Html
+alarmMailTemplate  (AET at' an as _ppl pemail cs) tz = do
   let utc' = intToUTCTime at'
       localTime = show $ utcToLocalTime tz utc'
       status = statusHumanReable as
@@ -64,9 +47,12 @@ alarmMailTemplate  (AET at' an as _ppl) tz = do
     <th> Alarm Time
     <th> Alarm Name
     <th> Alarm State
+    <th> Call Person
+    <th> Call Status
     <tr>
       <td> #{ localTime }
       <td> #{ an }
       <td> #{ status }
-
+      <td> #{ pemail }
+      <td> #{ show cs}
 |]
