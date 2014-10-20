@@ -101,10 +101,8 @@ processMailList aet email = do
   sMail <- simpleMail fromAddress toAddress emailSubject  plainBody htmlBody  []
   return $ sMail {mailTo= [toAddress]}
 
-
 processAlarmEmailTemplate :: AlarmEmailTemplate -> [Text] -> IO [Mail]
 processAlarmEmailTemplate aet  = traverse (processMailList aet)
-
 
 processAlarmRunner :: AlarmRunner AnyAlarm AnyCall ct -> SMTPConnection -> IO ()
 processAlarmRunner ar connection = do
