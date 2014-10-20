@@ -26,7 +26,7 @@ Library
                       , lens >= 4.4 && < 4.5
                       , alarm-state-types >= 0.1.0
                       , mime-mail >= 0.4.5.2
-                      , yesod    >= 1.2.4 && < 1.4
+                      , yesod-core  >= 1.2.6.2 && < 1.4  
                       , HaskellNet >= 0.4
                       , HaskellNet-SSL >= 0.2.5.1
                       , bytestring >= 0.10.4.0
@@ -52,11 +52,10 @@ Executable plowemail
                        , lens
                        , alarm-log-adapter 
                        , alarm-state-types
-                       , yesod
+                       , yesod-core
                        , mime-mail 
                        , HaskellNet
                        , HaskellNet-SSL
-                       , validation
                        , bytestring
                        , shakespeare     
                        , shakespeare-templates 
@@ -91,7 +90,7 @@ Test-Suite spec
                       , bytestring
                       , alarm-state-types 
                       , alarm-log-adapter
-                      , yesod 
+                      , yesod-core
                       , shakespeare
                       , shakespeare-templates
                       , alarm-log-types 

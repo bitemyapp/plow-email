@@ -17,8 +17,8 @@ module Plow.Email.Server  where
 
 
 import           Plow.Email.Handler
-import           System.IO          (IO)
-import           Yesod
+import           System.IO           (IO)
+import           Yesod.Core.Dispatch (warp)
 
 startServer :: IO ()
 startServer = warp 2633 MailFoundation

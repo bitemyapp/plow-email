@@ -25,7 +25,7 @@ module Plow.Email.Lens ( stateChangeTime_
 
 
 import           Alarm.Log.Adapter
-import           Control.Lens
+import           Control.Lens      (makePrisms)
 import           Plow.Extras.Lens  (makeLenses_)
 
 -- _eventEntries is defined in the Log Types so just use it

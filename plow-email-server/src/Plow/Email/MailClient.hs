@@ -31,7 +31,7 @@ import           Network.HaskellNet.SMTP     (Command (..), SMTPConnection,
                                               sendCommand, sendMail)
 import           Network.HaskellNet.SMTP.SSL
 import           Network.HaskellNet.SSL      (defaultSettingsWithPort)
-import           Network.Mail.Mime           (Mail, renderMail')
+import           Network.Mail.Mime           (Address (..), Mail, renderMail')
 
 defaultToAddress :: Address
 defaultToAddress = Address (Just "Scott Murphy") "scottmurphy09@gmail.com"

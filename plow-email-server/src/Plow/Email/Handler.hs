@@ -35,7 +35,11 @@ import           Plow.Email.MailClient
 import           Plow.Email.MailTemplate
 import           Plow.Email.Types
 import           System.IO               (hPrint, stderr)
-import           Yesod
+import           Text.Hamlet             (Html)
+import           Yesod.Core              (Yesod, defaultLayout, liftIO,
+                                          parseJsonBody, renderRoute, whamlet)
+import           Yesod.Core.Dispatch     (mkYesod, parseRoutesFile)
+
 
 data MailFoundation = MailFoundation
 
