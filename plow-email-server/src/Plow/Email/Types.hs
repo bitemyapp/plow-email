@@ -15,13 +15,7 @@ Portability :   non-portable
 
 module Plow.Email.Types (  module Alarm.Log.Adapter
                          , module AlarmState.Types
-                         , AlarmEmailTemplate (AET)
-                         , aetTime
-                         , aetName
-                         , aetStatus
-                         , aetCallPerson
-                         , aetCallStatus
-                         , mailPPL
+                         , AlarmEmailTemplate (..)
                          , defaultToAddress
                          , defaultFromAddress
                        ) where
