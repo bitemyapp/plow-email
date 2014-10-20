@@ -21,7 +21,8 @@ Library
                         Plow.Email.MailClient
                         Plow.Email.Handler
   Build-Depends:        base >= 4 && < 5
-                      , alarm-log-adapter >= 0.2.1	
+                      , alarm-log-adapter >= 0.2.1
+                      , alarm-state-types	
                       , lens >= 4.4 && < 4.5
                       , alarm-state-types >= 0.1.0
                       , mime-mail >= 0.4.5.2
@@ -35,7 +36,6 @@ Library
                       , text 
                       , containers
                       , lens-aeson
-                      , alarm-state-types
                       , time
                       , plow-extras-lens >= 0.1.1
                       , plow-extras-time >= 0.1.1
@@ -51,6 +51,7 @@ Executable plowemail
    build-depends:        base
                        , lens
                        , alarm-log-adapter 
+                       , alarm-state-types
                        , yesod
                        , mime-mail 
                        , HaskellNet
@@ -63,7 +64,6 @@ Executable plowemail
                        , text
                        , containers
                        , lens-aeson
-                       , alarm-state-types
                        , time
                        , plow-extras-lens 
                        , plow-extras-time
@@ -90,6 +90,7 @@ Test-Suite spec
                       , validation
                       , bytestring
                       , alarm-state-types 
+                      , alarm-log-adapter
                       , yesod 
                       , shakespeare
                       , shakespeare-templates
@@ -101,7 +102,6 @@ Test-Suite spec
                       , time
                       , lens
                       , lens-aeson
-                      , alarm-log-adapter
                       , containers
                       , alarm-db-keys
                       , directed-keys

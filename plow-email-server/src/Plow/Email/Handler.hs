@@ -9,7 +9,6 @@ Stability   :  unstable
 Portability :   non-portable (System.Posix)
 -}
 
-{-# LANGUAGE NoImplicitPrelude   #-}
 {-# LANGUAGE OverloadedStrings   #-}
 {-# LANGUAGE QuasiQuotes         #-}
 {-# LANGUAGE RecordWildCards     #-}
@@ -35,9 +34,7 @@ import           Plow.Email.Lens         (eventEntries_, stateChangeMsg_,
 import           Plow.Email.MailClient
 import           Plow.Email.MailTemplate
 import           Plow.Email.Types
-import           Prelude                 hiding (concat)
 import           System.IO               (hPrint, stderr)
-
 import           Yesod
 
 data MailFoundation = MailFoundation
@@ -112,7 +109,7 @@ eventEntriesToAlarmRunners s = catMaybes $ decodeAR <$> msgTxt
      where  eventList = s ^.. (traverse . eventEntries_ .folded ) :: [AlarmLogEvent]
             msgTxt = eventList ^.. (traverse  . _EventStateChange . stateChangeMsg_ )
 
-processAlarmRunners :: [AlarmRunner AnyAlarm AnyCall ct] -> SMTPConnection -> s -> Handler Value
+processAlarmRunners :: [AlarmRunner AnyAlarm AnyCall ct] -> SMTPConnection -> [EventEntries] -> Handler Value
 processAlarmRunners ars connection s = do
   let alarmRunnerCount = length ars
   rslt <- liftIO $ try $ traverse (`processAlarmRunner` connection) ars

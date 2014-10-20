@@ -8,7 +8,6 @@ Stability   :  unstable
 Portability :   non-portable
 -}
 
-{-# LANGUAGE NoImplicitPrelude   #-}
 {-# LANGUAGE OverloadedStrings   #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TypeFamilies        #-}
@@ -16,21 +15,12 @@ Portability :   non-portable
 module Plow.Email.Types (  module Alarm.Log.Adapter
                          , module AlarmState.Types
                          , AlarmEmailTemplate (..)
-                         , defaultToAddress
-                         , defaultFromAddress
                        ) where
 
 import           Alarm.Log.Adapter
 import           AlarmState.Types
 import           Data.Text         (Text)
-import           Network.Mail.Mime
-import           Prelude
 
-defaultToAddress :: Address
-defaultToAddress = Address (Just "Scott Murphy") "scottmurphy09@gmail.com"
-
-defaultFromAddress :: Address
-defaultFromAddress = Address (Just "Alarms") "alarms@plowtech.net"
 
 data AlarmEmailTemplate = AET
                            { aetTime       :: Int,
