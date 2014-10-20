@@ -19,6 +19,7 @@ module Plow.Email.MailClient (   defaultMailClient
                                , authenticateMailClient
                               --  , buildMail
                                , SMTPConnection
+                               , Mail
                              ) where
 
 import           Control.Applicative         ((<$>))
@@ -30,7 +31,7 @@ import           Network.HaskellNet.SMTP     (Command (..), SMTPConnection,
                                               sendCommand, sendMail)
 import           Network.HaskellNet.SMTP.SSL
 import           Network.HaskellNet.SSL      (defaultSettingsWithPort)
-import           Network.Mail.Mime
+import           Network.Mail.Mime           (Mail, renderMail')
 import           Prelude
 
 defaultMailClient :: String

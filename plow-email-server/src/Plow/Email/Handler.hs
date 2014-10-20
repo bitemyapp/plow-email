@@ -16,6 +16,7 @@ Portability :   non-portable (System.Posix)
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TemplateHaskell     #-}
 {-# LANGUAGE TypeFamilies        #-}
+
 module Plow.Email.Handler  where
 
 import           Control.Applicative     ((<$>))
@@ -39,8 +40,6 @@ import           System.IO               (hPrint, stderr)
 
 import           Yesod
 
-
-
 data MailFoundation = MailFoundation
 
 mkYesod "MailFoundation" $(parseRoutesFile "mail-server-routes")
@@ -57,18 +56,10 @@ postEmailR = do
    var <- parseJsonBody :: Handler (Result [EventEntries])
    case var of
      (Error f) -> return . toJSON $ f
-     (Success s) -> do
+     (Success ees) -> do
         connection <- liftIO getConnection
-        let eventList = s ^.. (traverse . eventEntries_ .folded ) :: [AlarmLogEvent]
-            msgTxt = eventList ^.. (traverse  . _EventStateChange . stateChangeMsg_ )
-            ars = catMaybes $ decodeAR <$> msgTxt
-            alarmRunnerCount = length ars
-        rslt <- liftIO $ try $ traverse (`processAlarmRunner` connection) ars
-        case rslt of
-            Left (_e::SomeException) -> return . toJSON $ ("Error on sending email request."::Text)
-            Right _ -> do
-                  liftIO $ print ((show alarmRunnerCount ++ " AlarmRunners are process.")::String)
-                  return . toJSON $ s
+        processAlarmRunners (eventEntriesToAlarmRunners ees) connection ees
+
 
 ePrint :: Show a => a -> IO ()
 ePrint = hPrint stderr
@@ -116,10 +107,20 @@ processAlarmRunner ar connection = do
            void $ traverse (\rm -> sendEmails rm froms connection) rms
            return ()
 
+eventEntriesToAlarmRunners :: [EventEntries] -> [AlarmRunner AnyAlarm AnyCall AnyCount]
+eventEntriesToAlarmRunners s = catMaybes $ decodeAR <$> msgTxt
+     where  eventList = s ^.. (traverse . eventEntries_ .folded ) :: [AlarmLogEvent]
+            msgTxt = eventList ^.. (traverse  . _EventStateChange . stateChangeMsg_ )
 
-
-
-
+processAlarmRunners :: [AlarmRunner AnyAlarm AnyCall ct] -> SMTPConnection -> s -> Handler Value
+processAlarmRunners ars connection s = do
+  let alarmRunnerCount = length ars
+  rslt <- liftIO $ try $ traverse (`processAlarmRunner` connection) ars
+  case rslt of
+       Left (_e::SomeException) -> return . toJSON $ ("Error on sending email request."::Text)
+       Right _ -> do
+         liftIO $ print ((show alarmRunnerCount ++ " AlarmRunners are process.")::String)
+         return . toJSON $ s
 
 
 

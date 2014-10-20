@@ -27,7 +27,7 @@ import           Network.Mail.Mime
 import           Prelude
 
 defaultToAddress :: Address
-defaultToAddress = Address (Just "Scott Murphy ") "scottmurphy09@gmail.com"
+defaultToAddress = Address (Just "Scott Murphy") "scottmurphy09@gmail.com"
 
 defaultFromAddress :: Address
 defaultFromAddress = Address (Just "Alarms") "alarms@plowtech.net"
