@@ -14,8 +14,8 @@ Portability :   non-portable
 {-# LANGUAGE TypeFamilies      #-}
 
 module Plow.Email.MailTemplate ( alarmMailTemplate
-                               , statusHumanReable
                                , hamletToText
+                               , statusHumanReadable
                                , getCurrentTimeZone
                                ) where
 import           Data.Time.LocalTime       (TimeZone, getCurrentTimeZone,
@@ -26,20 +26,30 @@ import           Prelude
 import           Text.Hamlet               (Html, hamlet)
 import           Text.Shakespeare.Template (hamletToText)
 
-statusHumanReable :: AnyAlarm -> String
-statusHumanReable status =
+statusHumanReadable :: AnyAlarm -> String
+statusHumanReadable status =
                   case status of
                   (SClear s) -> show s
                   (SClearing s) -> show s
                   (STripped s) -> show s
                   (STripping s) -> show s
 
+callstatusHumanReadable :: AnyCall -> String
+callstatusHumanReadable status =
+  case status of
+       (SNotCalling s) -> show s
+       (SCalling s) -> show s
+       (SNoAnswer s) -> show s
+       (SAck s) -> show s
+       (SNotAck s) -> show s
+       (SCall s) -> show s
 
 alarmMailTemplate :: AlarmEmailTemplate -> TimeZone -> t -> Html
 alarmMailTemplate  (AET at' an as _ppl pemail cs) tz = do
   let utc' = intToUTCTime at'
       localTime = show $ utcToLocalTime tz utc'
-      status = statusHumanReable as
+      status = statusHumanReadable as
+      callStatus = callstatusHumanReadable cs
   [hamlet|
 <h3> Plow Technologies Alarm System </h3>
 <table>
@@ -54,5 +64,5 @@ alarmMailTemplate  (AET at' an as _ppl pemail cs) tz = do
       <td> #{ an }
       <td> #{ status }
       <td> #{ pemail }
-      <td> #{ show cs}
+      <td> #{ callStatus }
 |]

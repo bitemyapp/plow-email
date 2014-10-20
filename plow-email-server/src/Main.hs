@@ -15,7 +15,4 @@ import           Plow.Email.Server
 import           Yesod
 
 main :: IO ()
-main = startServer MailFoundation
-
-startServer :: MailFoundation -> IO ()
-startServer = warp 2633
+main = startServer

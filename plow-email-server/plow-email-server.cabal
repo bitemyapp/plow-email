@@ -18,6 +18,8 @@ Library
   Other-Modules:        Plow.Email.Lens
                         Plow.Email.Types
                         Plow.Email.MailTemplate
+                        Plow.Email.MailClient
+                        Plow.Email.Handler
   Build-Depends:        base >= 4 && < 5
                       , alarm-log-adapter >= 0.2.1	
                       , lens >= 4.4 && < 4.5
