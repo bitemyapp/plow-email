@@ -17,6 +17,7 @@ module Plow.Email.MailClient (   defaultMailClient
                                , getConnection
                                , sendEmails
                                , authenticateMailClient
+                              --  , buildMail
                                , SMTPConnection
                              ) where
 
@@ -38,8 +39,10 @@ defaultMailClient = "smtp.gmail.com"
 getConnection ::IO SMTPConnection
 getConnection = connectSMTPSSLWithSettings defaultMailClient (defaultSettingsWithPort 465)
 
-
 authenticateMailClient connection = sendCommand connection (AUTH LOGIN "alarms@plowtech.net" "jk8kmyh4tv3cx4t")
+
+
+-- buildMail fromAddress toAddress subject plainBody htmlBody attachments = simpleMail
 
 sendEmails :: Mail -> [Text] -> SMTPConnection -> IO ()
 sendEmails rm froms connection = do

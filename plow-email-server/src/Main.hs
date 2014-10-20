@@ -12,7 +12,5 @@ Portability :   non-portable
 
 import           Plow.Email.Server
 
-import           Yesod
-
 main :: IO ()
 main = startServer

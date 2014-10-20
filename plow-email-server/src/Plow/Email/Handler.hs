@@ -58,7 +58,7 @@ postEmailR = do
    case var of
      (Error f) -> return . toJSON $ f
      (Success s) -> do
-        connection <- liftIO $ getConnection
+        connection <- liftIO getConnection
         let eventList = s ^.. (traverse . eventEntries_ .folded ) :: [AlarmLogEvent]
             msgTxt = eventList ^.. (traverse  . _EventStateChange . stateChangeMsg_ )
             ars = catMaybes $ decodeAR <$> msgTxt
@@ -93,10 +93,14 @@ buildEmailSubject aet =  aetName aet <>  (" "::Text) <>  (pack . statusHumanRead
 processMailList :: AlarmEmailTemplate -> Text -> IO Mail
 processMailList aet email = do
   tz <- getCurrentTimeZone
-  sMail <- simpleMail defaultFromAddress to' (buildEmailSubject aet)  "here is the plain body" (hamletToText $ alarmMailTemplate aet tz )  []
-  return $ sMail {mailTo=to':[]}
-    where
-      to' = Address Nothing email
+  let fromAddress = defaultFromAddress
+      toAddress = Address Nothing email
+      emailSubject = buildEmailSubject aet
+      plainBody = "here is the plainBody"
+      htmlBody = hamletToText (alarmMailTemplate aet tz)
+  sMail <- simpleMail fromAddress toAddress emailSubject  plainBody htmlBody  []
+  return $ sMail {mailTo= [toAddress]}
+
 
 processAlarmEmailTemplate :: AlarmEmailTemplate -> [Text] -> IO [Mail]
 processAlarmEmailTemplate aet  = traverse (processMailList aet)
