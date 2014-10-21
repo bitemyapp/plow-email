@@ -2,7 +2,13 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 
 module TestImport
-    (  module Network.Mail.Mime
+    (  Spec
+     , Example
+     , module Yesod.Test
+     , module Network.Mail.Mime
+     , module Data.Aeson
+     , MailFoundation (..)
+     , mockOpts
      , exampleToAddress
      , exampleFromAddress
      , testSimpleMail
@@ -11,33 +17,24 @@ module TestImport
      ) where
 
 
-import           Data.Text             hiding (length)
+-- General
+import           Data.Aeson
+import qualified Data.Set            as S
+import           Data.Text           hiding (length)
 import           Network.Mail.Mime
+import           Plow.Email.CMD      (MyOptions (..))
+import           Plow.Email.Handler  (MailFoundation (..))
+import           Yesod.Test
 -- Alarm Keys
-import           Alarm.DB.Keys
 import           Alarm.DB.Keys.Types
 import           Alarm.Log.Adapter
-import qualified Data.Set              as S
-import           DirectedKeys.Types
--- Key
--- import           Plow.Email.
-import           Prelude               hiding (concat)
--- Email
-import           Control.Applicative   ((<$>))
-import           Control.Exception     (SomeException, try)
-import           Control.Lens
-import           Control.Monad         (void)
-import           Data.Aeson
-import           Data.ByteString.Lazy  (toStrict)
-import           Data.Maybe            (catMaybes)
-import           Data.Traversable      (traverse)
-import           Plow.Email.Handler    (eventEntriesToAlarmRunners,
-                                        processAlarmRunners)
-import           Plow.Email.Lens       (eventEntries_, stateChangeMsg_,
-                                        _EventStateChange)
-import           Plow.Email.MailClient
-import           Yesod.Core            (liftIO)
 
+
+type Spec = YesodSpec MailFoundation
+type Example = YesodExample MailFoundation
+
+mockOpts :: MyOptions
+mockOpts = MyOptions Nothing
 
 exampleToAddress :: Address
 exampleToAddress = Address (Just "Scott Murphy ") "lingpo.huang@plowtech.net"

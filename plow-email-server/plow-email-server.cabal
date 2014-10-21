@@ -122,6 +122,7 @@ Test-Suite spec
                       , wreq
                       , warp
                       , cmdargs
+                      , yesod-test
                                   
 
 Source-Repository head

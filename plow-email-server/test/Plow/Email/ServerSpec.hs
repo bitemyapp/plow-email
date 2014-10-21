@@ -1,28 +1,28 @@
-{-# LANGUAGE OverloadedStrings   #-}
-{-# LANGUAGE ScopedTypeVariables #-}
+{- |
+Module      :  <ServerSpec>
+Description :  <Warp Specs for Plow Email Server>
+Copyright   :  (c) <Plow Technology 2014>
+License     :  <MIT>
 
-module Plow.Email.ServerSpec (main, spec) where
+Maintainer  :  Scott Murphy
+Stability   :  unstable
+Portability :   non-portable (System.Posix)
+-}
+
+{-# LANGUAGE OverloadedStrings #-}
+module Plow.Email.ServerSpec (plowemailspec) where
 
 
-import           Test.Hspec
-
-import           Control.Monad        (void)
-import           Data.ByteString.Lazy (toStrict)
-import           Network.Mail.Mime
+import           Plow.Email.Handler
 import           TestImport
 
-
-main :: IO ()
-main = hspec spec
-
-spec :: Spec
-
-spec = do
-  describe "Send Email" $
-    it "Should Connect to the smtp gmail server and send a test email." $ do
-      True `shouldBe` True
-      -- testConnectGmailSmtp
-      -- testPostEmail
-
-
-
+plowemailspec :: Spec
+plowemailspec = do
+  ydescribe "getHomeR" $
+      yit "See if Plow Email Server is running right" $ do
+          get HomeR
+          printBody >> statusIs 200
+  ydescribe "postEmailR" $
+      yit "Send a email using defualt setting " $ do
+          postBody EmailR (encode testEventEntries)
+          printBody >> statusIs 200
