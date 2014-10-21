@@ -13,4 +13,4 @@ Portability :   non-portable
 import           Plow.Email.Server
 
 main :: IO ()
-main = startServer
+main = startPlowEmail

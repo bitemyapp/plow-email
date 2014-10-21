@@ -8,40 +8,35 @@ module TestImport
      , testSimpleMail
      , testAlarmRunner
      , testEventEntries
-     , testConnectGmailSmtp
-     , testPostEmail
      ) where
 
 
-import           Data.Text                   hiding (length)
+import           Data.Text             hiding (length)
 import           Network.Mail.Mime
 -- Alarm Keys
 import           Alarm.DB.Keys
 import           Alarm.DB.Keys.Types
 import           Alarm.Log.Adapter
-import qualified Data.Set                    as S
+import qualified Data.Set              as S
 import           DirectedKeys.Types
 -- Key
-import           Plow.Email.Server           hiding (exampleFromAddress,
-                                              exampleToAddress)
-import           Prelude                     hiding (concat)
+-- import           Plow.Email.
+import           Prelude               hiding (concat)
 -- Email
-import           Control.Applicative         ((<$>))
-import           Control.Exception           (SomeException, try)
+import           Control.Applicative   ((<$>))
+import           Control.Exception     (SomeException, try)
 import           Control.Lens
-import           Control.Monad               (void)
+import           Control.Monad         (void)
 import           Data.Aeson
-import           Data.ByteString.Lazy        (toStrict)
-import           Data.Maybe                  (catMaybes)
-import           Data.Traversable            (traverse)
-import           Network.HaskellNet.Auth     (AuthType (..), plain)
-import           Network.HaskellNet.SMTP     (Command (..), sendCommand,
-                                              sendMail)
-import           Network.HaskellNet.SMTP.SSL
-import           Network.HaskellNet.SSL      (defaultSettingsWithPort)
-import           Plow.Email.Lens             (eventEntries_, stateChangeMsg_,
-                                              _EventStateChange)
-import           Yesod
+import           Data.ByteString.Lazy  (toStrict)
+import           Data.Maybe            (catMaybes)
+import           Data.Traversable      (traverse)
+import           Plow.Email.Handler    (eventEntriesToAlarmRunners,
+                                        processAlarmRunners)
+import           Plow.Email.Lens       (eventEntries_, stateChangeMsg_,
+                                        _EventStateChange)
+import           Plow.Email.MailClient
+import           Yesod.Core            (liftIO)
 
 
 exampleToAddress :: Address
@@ -71,26 +66,4 @@ testEntries = S.singleton $ EventStateChange (StateChange (1274335854::Int) test
 testEventEntries :: [EventEntries]
 testEventEntries = [testEventEntry]
 
-testConnectGmailSmtp :: IO ()
-testConnectGmailSmtp = do
-  connection <- connectSMTPSSLWithSettings "smtp.gmail.com" (defaultSettingsWithPort 465)
-  rm <- renderMail' =<< testSimpleMail
-  void $ sendCommand connection  (AUTH LOGIN "alarms@plowtech.net" "jk8kmyh4tv3cx4t")
-  sendMail  "alarms@plowtech.net" ["lingpo.huang@plowtech.net"]  (toStrict rm)  connection
 
-
-testPostEmail :: IO ()
-testPostEmail = do
-   let s = testEventEntries
-   print (toJSON s)
-   connection <- liftIO $ connectSMTPSSLWithSettings "smtp.gmail.com" (defaultSettingsWithPort 465)
-   let eventList = s ^.. (traverse . eventEntries_ .folded ) :: [AlarmLogEvent]
-       msgTxt = eventList ^.. (traverse  . _EventStateChange . stateChangeMsg_ )
-       ars = catMaybes $ decodeAR <$> msgTxt
-       alarmRunnerCount = length ars
-   rslt <- liftIO $ try $ traverse (`processAlarmRunner` connection) ars
-   case rslt of
-    Left (_e::SomeException) -> print  ("Error on sending email request."::Text)
-    Right _ -> do
-      liftIO $ print ((show alarmRunnerCount ++ " AlarmRunners are process.")::String)
-      print ("Email Sucessfully sent."::Text)

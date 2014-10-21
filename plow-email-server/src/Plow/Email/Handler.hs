@@ -1,7 +1,7 @@
 
 {- |
-Module      :  Plow.Email.Server
-Description :  Plow.Email sends quick emails
+Module      :  Plow.Email.Handler
+Description :  Routes and its implementation
 Copyright   :  (c) Plow Technologies
 License     :  MIT License
 Maintainer  :  Scott Murphy
@@ -28,7 +28,6 @@ import           Data.Monoid             ((<>))
 import           Data.Text               (Text, pack)
 import           Data.Text.Lazy          (fromStrict)
 import           Data.Text.Lazy.Encoding (encodeUtf8)
-import           Network.Mail.Mime
 import           Plow.Email.Lens         (eventEntries_, stateChangeMsg_,
                                           _EventStateChange)
 import           Plow.Email.MailClient
@@ -61,6 +60,8 @@ postEmailR = do
         connection <- liftIO getConnection
         processAlarmRunners (eventEntriesToAlarmRunners ees) connection ees
 
+
+-- ==============Handler Function===========
 
 ePrint :: Show a => a -> IO ()
 ePrint = hPrint stderr

@@ -15,10 +15,14 @@ Portability :   non-portable (System.Posix)
 module Plow.Email.MailClient (   defaultMailClient
                                , getConnection
                                , sendEmails
+                               , simpleMail
+                               , sendmail
+                               , mailTo
                                , authenticateMailClient
                                , defaultToAddress
                                , defaultFromAddress
                                , SMTPConnection
+                               , Address (..)
                                , Mail
                              ) where
 
@@ -29,9 +33,10 @@ import           Data.ByteString.Lazy        (toStrict)
 import           Network.HaskellNet.Auth     (AuthType (..))
 import           Network.HaskellNet.SMTP     (Command (..), SMTPConnection,
                                               sendCommand, sendMail)
-import           Network.HaskellNet.SMTP.SSL
+import           Network.HaskellNet.SMTP.SSL (connectSMTPSSLWithSettings)
 import           Network.HaskellNet.SSL      (defaultSettingsWithPort)
-import           Network.Mail.Mime           (Address (..), Mail, renderMail')
+import           Network.Mail.Mime           (Address (..), Mail, mailTo,
+                                              renderMail', sendmail, simpleMail)
 
 defaultToAddress :: Address
 defaultToAddress = Address (Just "Scott Murphy") "scottmurphy09@gmail.com"
@@ -47,9 +52,6 @@ getConnection ::IO SMTPConnection
 getConnection = connectSMTPSSLWithSettings defaultMailClient (defaultSettingsWithPort 465)
 
 authenticateMailClient connection = sendCommand connection (AUTH LOGIN "alarms@plowtech.net" "jk8kmyh4tv3cx4t")
-
-
--- buildMail fromAddress toAddress subject plainBody htmlBody attachments = simpleMail
 
 sendEmails :: Mail -> [Text] -> SMTPConnection -> IO ()
 sendEmails rm froms connection = do
