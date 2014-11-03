@@ -21,27 +21,26 @@ Library
                         Plow.Email.MailClient
                         Plow.Email.Handler
                         Plow.Email.Config
-  Build-Depends:        base >= 4 && < 5
-                      , alarm-log-adapter >= 0.2.1
-                      , alarm-state-types	
-                      , lens >= 4.4 && < 4.5
-                      , alarm-state-types >= 0.1.0
-                      , mime-mail >= 0.4.5.2
-                      , yesod-core  >= 1.2.6.2 && < 1.4  
-                      , HaskellNet >= 0.4
-                      , HaskellNet-SSL >= 0.2.5.1
-                      , bytestring >= 0.10.4.0
-                      , shakespeare  >= 2.0.1.1
-                      , shakespeare-templates  >= 0.0.1
+  Build-Depends:        base                    >= 4 && < 5
+                      , lens                    >= 4.4 && < 4.5
+                      , mime-mail               >= 0.4.5.2
+                      , yesod-core              >= 1.2.6.2 && < 1.4  
+                      , HaskellNet              >= 0.4
+                      , HaskellNet-SSL          >= 0.2.5.1
+                      , bytestring              >= 0.10.4.0
+                      , shakespeare             >= 2.0.1.1
+                      , shakespeare-templates   >= 0.0.1
+                      , alarm-log-adapter       >= 0.2.1
+                      , alarm-state-types       >= 0.1.0
+                      , node-client-configs     >= 0.1.2
+                      , plow-extras-lens        >= 0.1.1
+                      , plow-extras-time        >= 0.1.1
+                      , lens-aeson
+                      , system-filepath
                       , aeson
                       , text 
                       , containers
-                      , lens-aeson
                       , time
-                      , plow-extras-lens >= 0.1.1
-                      , plow-extras-time >= 0.1.1
-                      , system-filepath
-                      , node-client-configs
                       , yaml
                       , wreq
                       , warp
@@ -56,25 +55,25 @@ Executable plowemail
 
 
    build-depends:        base
-                       , lens
-                       , alarm-log-adapter 
-                       , alarm-state-types
-                       , yesod-core
-                       , mime-mail 
-                       , HaskellNet
-                       , HaskellNet-SSL
-                       , bytestring
-                       , shakespeare     
-                       , shakespeare-templates 
-                       , aeson
-                       , text
-                       , containers
+                       , lens                   
+                       , mime-mail              
+                       , yesod-core             
+                       , HaskellNet              
+                       , HaskellNet-SSL        
+                       , bytestring             
+                       , shakespeare            
+                       , shakespeare-templates  
+                       , alarm-log-adapter      
+                       , alarm-state-types      
+                       , node-client-configs   
+                       , plow-extras-lens       
+                       , plow-extras-time       
                        , lens-aeson
-                       , time
-                       , plow-extras-lens 
-                       , plow-extras-time
                        , system-filepath
-                       , node-client-configs
+                       , aeson
+                       , text 
+                       , containers
+                       , time
                        , yaml
                        , wreq
                        , warp
@@ -96,33 +95,32 @@ Test-Suite spec
   Main-Is:              Spec.hs
   Build-Depends:        base
                       , hspec
-                      , mime-mail 
-                      , HaskellNet
-                      , HaskellNet-SSL
-                      , validation
-                      , bytestring
-                      , alarm-state-types 
-                      , alarm-log-adapter
-                      , yesod-core
-                      , shakespeare
-                      , shakespeare-templates
-                      , alarm-log-types 
-                      , aeson
-                      , text
-                      , plow-extras-lens 
-                      , plow-extras-time
-                      , time
-                      , lens
-                      , lens-aeson
-                      , containers
+                      , yesod-test
+                      , lens                   
+                      , mime-mail              
+                      , yesod-core             
+                      , HaskellNet              
+                      , HaskellNet-SSL        
+                      , bytestring             
+                      , shakespeare            
+                      , shakespeare-templates  
+                      , alarm-log-adapter      
+                      , alarm-state-types      
+                      , node-client-configs   
                       , alarm-db-keys
                       , directed-keys
+                      , plow-extras-lens       
+                      , plow-extras-time       
+                      , lens-aeson
                       , system-filepath
-                      , node-client-configs
+                      , aeson
+                      , text 
+                      , containers
+                      , time
+                      , yaml
                       , wreq
                       , warp
                       , cmdargs
-                      , yesod-test
                                   
 
 Source-Repository head
