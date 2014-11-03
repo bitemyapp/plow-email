@@ -32,4 +32,4 @@ deployment:
   staging:
     branch: master
     commands:
-      -  cd ~/plow-email/plow-email-server/dist/build/plow-email/ && rsync -avz -e ssh plowemail scott@54.69.197.241:/home/scott/node/plow-email/bin/
+      -  cd ~/plow-email/plow-email-server/dist/build/plowemail/ && rsync -avz -e ssh plowemail scott@54.69.197.241:/home/scott/node/plow-email/bin/
