@@ -32,7 +32,7 @@ Library
                       , shakespeare-templates   >= 0.0.1
                       , alarm-log-adapter       >= 0.2.1
                       , alarm-state-types       >= 0.1.0
-                      , node-client-configs     >= 0.1.2
+                      , node-client-configs     >= 0.1.3
                       , plow-extras-lens        >= 0.1.1
                       , plow-extras-time        >= 0.1.1
                       , lens-aeson
