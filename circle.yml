@@ -32,7 +32,7 @@ deployment:
     commands:
       - cd ~/plow-email/plow-email-server/dist/build/plowemail/ && rsync -avz -e ssh plowemail scott@54.69.197.241:/home/scott/node/plow-email/bin/:
           timeout: 3000
-      - ssh scott@54.69.197.241 "./deploy/deploy_plowemail && killall plowemail":
+      - ssh scott@54.69.197.241 "./deploy/deploy_plowemail.sh && killall plowemail":
          timeout: 3000
           
   production:
@@ -40,5 +40,5 @@ deployment:
     commands:
       - cd ~/plow-email/plow-email-server/dist/build/plowemail/ && rsync -avz -e ssh plowemail node@108.168.240.123:/home/node/plow-email/bin/:
           timeout: 3000
-      - ssh node@108.168.240.123 "./deploy/deploy_kiosk.sh && killall plowemail":
+      - ssh node@108.168.240.123 "./deploy/deploy_plowemail.sh && killall plowemail":
           timeout: 3000
