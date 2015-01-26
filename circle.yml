@@ -17,15 +17,13 @@ dependencies:
     - "if [ ! -f /home/ubuntu/.cabal/config ]; then cabal update && echo remote-repo: hackage.plowtech.net:http://hackage.plowtech.net/packages/archive >> ~/.cabal/config; else echo .cabal/config file already exists; fi"
     - cabal update
     - cabal sandbox init
-    - cabal install   --only-dependencies --enable-tests -j2
+    - cabal install -j2
     - if [ "$CIRCLE_BRANCH" == "production" ]; then yesod configure && echo "configuring for production build"; else cabal configure -fdev && echo "configuring non-production build"; fi
 
 test:
   override:
     - cabal configure
     - cabal build -j2:
-        timeout: 3000
-    - cabal test --show-details=always -j8:
         timeout: 3000
 
 deployment:
