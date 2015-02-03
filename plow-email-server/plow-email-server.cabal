@@ -24,7 +24,7 @@ Library
   Build-Depends:        base                    >= 4 && < 5
                       , lens                    >= 4.4 && < 4.5
                       , mime-mail               >= 0.4.5.2
-                      , yesod-core              >= 1.2.6.2 && < 1.4  
+                      , yesod-core              >= 1.4
                       , HaskellNet              >= 0.4
                       , HaskellNet-SSL          >= 0.2.5.1
                       , bytestring              >= 0.10.4.0
