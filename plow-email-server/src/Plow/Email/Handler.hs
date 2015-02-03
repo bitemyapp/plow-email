@@ -28,6 +28,7 @@ import           Data.Monoid             ((<>))
 import           Data.Text               (Text, pack)
 import           Data.Text.Lazy          (fromStrict)
 import           Data.Text.Lazy.Encoding (encodeUtf8)
+import           Network.Mail.Mime       (Mail (..))
 import           Plow.Email.Lens         (eventEntries_, stateChangeMsg_,
                                           _EventStateChange)
 import           Plow.Email.MailClient
@@ -92,7 +93,7 @@ processMailList aet email = do
       plainBody = "here is the plainBody"
       htmlBody = hamletToText (alarmMailTemplate aet tz)
   sMail <- simpleMail fromAddress toAddress emailSubject  plainBody htmlBody  []
-  return $ sMail {mailTo= [toAddress]}
+  return sMail {mailCc = [], mailBcc = [], mailTo=[toAddress]}
 
 processAlarmEmailTemplate :: AlarmEmailTemplate -> [Text] -> IO [Mail]
 processAlarmEmailTemplate aet  = traverse (processMailList aet)
@@ -106,7 +107,7 @@ processAlarmRunner ar connection = do
       _ -> do
            rms <- processAlarmEmailTemplate at' froms
            void $ authenticateMailClient connection
-           void $ traverse (\rm -> sendEmails rm froms connection) rms
+           void $ traverse (\rm -> sendEmails rm connection) rms
            return ()
 
 eventEntriesToAlarmRunners :: [EventEntries] -> [AlarmRunner AnyAlarm AnyCall AnyCount]
