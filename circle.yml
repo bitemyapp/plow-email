@@ -18,7 +18,6 @@ dependencies:
     - cabal update
     - cabal sandbox init
     - cabal install -j2
-    - if [ "$CIRCLE_BRANCH" == "production" ]; then yesod configure && echo "configuring for production build"; else cabal configure -fdev && echo "configuring non-production build"; fi
 
 test:
   override:
