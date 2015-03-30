@@ -14,7 +14,7 @@ dependencies:
     - "~/plow-email/plow-email-server/.cabal-sandbox"
     - "~/plow-email/plow-email-server/dist"
   override:
-    - "if [ ! -f /home/ubuntu/.cabal/config ]; then cabal update && echo remote-repo: hackage.plowtech.net:http://hackage.plowtech.net/packages/archive >> ~/.cabal/config; else echo .cabal/config file already exists; fi"
+    - "if grep -Fxq 'remote-repo: hackage.plowtech.net:http://hackage.plowtech.net/packages/archive' ~/.cabal/config; then echo 'Already in config file'; else echo remote-repo: hackage.plowtech.net:http://hackage.plowtech.net/packages/archive >> ~/.cabal/config; fi"
     - cabal update
     - cabal sandbox init
     - cabal install -j2
