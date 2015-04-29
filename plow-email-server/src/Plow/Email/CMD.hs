@@ -7,9 +7,8 @@ module Plow.Email.CMD (   MyOptions (..)
 import           System.Console.CmdArgs
 
 data MyOptions = MyOptions
-    {   port     :: Maybe Int
-     ,  email    :: String
-     ,  password :: String
+    {   port :: Maybe Int
+
     } deriving (Data, Typeable, Show, Eq)
 
 
