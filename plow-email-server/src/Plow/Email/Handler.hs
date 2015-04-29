@@ -18,7 +18,7 @@ Portability :   non-portable (System.Posix)
 
 module Plow.Email.Handler  where
 
-import           Control.Applicative     ((<$>))
+import           Control.Applicative     ((<$>), (<*>))
 import           Control.Exception       (SomeException, try)
 import           Control.Lens
 import           Control.Monad           (void)
@@ -61,6 +61,45 @@ postEmailR = do
         connection <- liftIO getConnection
         processAlarmRunners (eventEntriesToAlarmRunners ees) connection ees
 
+
+postReportEmailR :: Handler Value
+postReportEmailR = do
+  var <- parseJsonBody :: Handler (Result Value)
+  case var of
+     (Error f) -> return . toJSON $ f
+     (Success ees) -> do
+        connection <- liftIO getConnection
+        undefined
+
+emailGenericMessage connection = do
+           sMail <- simpleMail defaultFromAddress
+                               (Address Nothing "")
+                               ""
+                               ""
+                               ""
+                               []
+           void $ authenticateMailClient connection
+           undefined
+
+data SimpleMail = SimpleMail {
+               fromAddress :: Address,
+               toAddress   :: Address,
+               subject     :: Text,
+               plainBody   :: Text,
+               htmlBody    :: Text,
+               attachments :: [(Text,FilePath)]
+} deriving (Show)
+
+instance FromJSON SimpleMail where
+  parseJSON (Object o) = SimpleMail <$>
+                          ((Address Nothing) <$> (o .: "from" ) ) <*>
+                          ((Address Nothing) <$> (o .: "to" ) ) <*>
+                          o .: "subject" <*>
+                          o .: "plainBody" <*>
+                          o .: "htmlBody" <*>
+                          o .: "attachments"
+
+  parseJSON _ = fail "Rule expected object received other"
 
 -- ==============Handler Function===========
 
@@ -110,10 +149,13 @@ processAlarmRunner ar connection = do
            void $ traverse (\rm -> sendEmails rm connection) rms
            return ()
 
+
 eventEntriesToAlarmRunners :: [EventEntries] -> [AlarmRunner AnyAlarm AnyCall AnyCount]
 eventEntriesToAlarmRunners s = catMaybes $ decodeAR <$> msgTxt
      where  eventList = s ^.. (traverse . eventEntries_ .folded ) :: [AlarmLogEvent]
             msgTxt = eventList ^.. (traverse  . _EventStateChange . stateChangeMsg_ )
+
+
 
 processAlarmRunners :: [AlarmRunner AnyAlarm AnyCall ct] -> SMTPConnection -> [EventEntries] -> Handler Value
 processAlarmRunners ars connection s = do

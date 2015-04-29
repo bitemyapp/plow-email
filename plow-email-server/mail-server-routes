@@ -1,2 +1,5 @@
 / HomeR GET
+
 /email EmailR POST
+
+/email-report ReportEmailR POST

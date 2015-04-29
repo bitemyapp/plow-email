@@ -7,8 +7,12 @@ module Plow.Email.CMD (   MyOptions (..)
 import           System.Console.CmdArgs
 
 data MyOptions = MyOptions
-    { port :: Maybe Int
+    {   port     :: Maybe Int
+     ,  email    :: String
+     ,  password :: String
     } deriving (Data, Typeable, Show, Eq)
+
+
 
 -- Customize your options, including help messages, shortened names, etc.
 myProgOpts :: MyOptions
