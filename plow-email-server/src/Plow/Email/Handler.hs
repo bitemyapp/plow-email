@@ -20,13 +20,14 @@ module Plow.Email.Handler  where
 
 import           Control.Applicative     ((<$>), (<*>))
 import           Control.Exception       (SomeException, try)
-import           Control.Lens
+import           Control.Lens            (folded, traverse, (^..))
 import           Control.Monad           (void)
 import           Data.Aeson
 import           Data.Maybe              (catMaybes)
 import           Data.Monoid             ((<>))
 import           Data.Text               (Text, pack)
 import           Data.Text.Lazy          (fromStrict)
+import qualified Data.Text.Lazy          as TL
 import           Data.Text.Lazy.Encoding (encodeUtf8)
 import           Network.Mail.Mime       (Mail (..))
 import           Plow.Email.Lens         (eventEntries_, stateChangeMsg_,
@@ -64,30 +65,35 @@ postEmailR = do
 
 postReportEmailR :: Handler Value
 postReportEmailR = do
-  var <- parseJsonBody :: Handler (Result Value)
+  var <- parseJsonBody :: Handler (Result SimpleMail)
   case var of
      (Error f) -> return . toJSON $ f
-     (Success ees) -> do
+     (Success mail) -> do
         connection <- liftIO getConnection
-        undefined
+        liftIO $ mySimpleMail mail connection
+        return . toJSON $ ()
 
-emailGenericMessage connection = do
-           sMail <- simpleMail defaultFromAddress
-                               (Address Nothing "")
-                               ""
-                               ""
-                               ""
-                               []
-           void $ authenticateMailClient connection
-           undefined
 
+mySimpleMail sm conn = do
+        sMail <- simpleMail
+                  (fromAddress sm)
+                  ( toAddress sm )
+                  ( subject sm )
+                  ( plainText sm)
+                  ( htmlText sm)
+                  ( attachments sm)
+        void $ authenticateMailClient conn
+        processMailAnySender sMail fromAddr toAddr conn
+         where
+           fromAddr = addressEmail . fromAddress $ sm
+           toAddr = addressEmail . toAddress $ sm
 data SimpleMail = SimpleMail {
-               fromAddress :: Address,
-               toAddress   :: Address,
-               subject     :: Text,
-               plainBody   :: Text,
-               htmlBody    :: Text,
-               attachments :: [(Text,FilePath)]
+               fromAddress  :: Address,
+                toAddress   :: Address,
+                subject     :: Text,
+                plainText   :: TL.Text,
+                htmlText    :: TL.Text,
+                attachments :: [(Text,FilePath)]
 } deriving (Show)
 
 instance FromJSON SimpleMail where
@@ -95,11 +101,24 @@ instance FromJSON SimpleMail where
                           ((Address Nothing) <$> (o .: "from" ) ) <*>
                           ((Address Nothing) <$> (o .: "to" ) ) <*>
                           o .: "subject" <*>
-                          o .: "plainBody" <*>
-                          o .: "htmlBody" <*>
+                          o .: "plainText" <*>
+                          o .: "htmlText" <*>
                           o .: "attachments"
 
   parseJSON _ = fail "Rule expected object received other"
+
+instance ToJSON SimpleMail where
+   toJSON (SimpleMail (Address _ from)
+                      (Address _ to)
+                      subject
+                      plainText
+                      htmlText
+                      attachments ) = object [ "from" .= from
+                                               ,"to".= to
+                                               ,"subject" .= subject
+                                               ,"plainText" .= plainText
+                                               ,"htmlText" .= htmlText
+                                               ,"attachments" .= attachments]
 
 -- ==============Handler Function===========
 

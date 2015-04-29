@@ -18,6 +18,7 @@ module Plow.Email.MailClient (   defaultMailClient
                                , simpleMail
                                , sendmail
                                , mailTo
+                             ,   processMailAnySender
                                , authenticateMailClient
                                , defaultToAddress
                                , defaultFromAddress
@@ -62,3 +63,11 @@ processMail :: Mail -> Text -> SMTPConnection -> IO ()
 processMail rm sender connection = do
   email <- renderMail' rm
   sendMail  "alarms@plowtech.net" [unpack sender]  (toStrict email) connection
+
+processMailAnySender :: Mail -> Text -> Text -> SMTPConnection -> IO ()
+processMailAnySender rm sender receiver connection=  do
+                      email <- renderMail' rm
+                      sendMail  senderString [receiverString]  (toStrict email) connection
+                       where
+                          senderString = unpack sender
+                          receiverString = unpack receiver
