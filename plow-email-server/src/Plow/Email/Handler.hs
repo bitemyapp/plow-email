@@ -18,15 +18,16 @@ Portability :   non-portable (System.Posix)
 
 module Plow.Email.Handler  where
 
-import           Control.Applicative     ((<$>))
+import           Control.Applicative     ((<$>), (<*>))
 import           Control.Exception       (SomeException, try)
-import           Control.Lens
+import           Control.Lens            (folded, traverse, (^..))
 import           Control.Monad           (void)
 import           Data.Aeson
 import           Data.Maybe              (catMaybes)
 import           Data.Monoid             ((<>))
 import           Data.Text               (Text, pack)
 import           Data.Text.Lazy          (fromStrict)
+import qualified Data.Text.Lazy          as TL
 import           Data.Text.Lazy.Encoding (encodeUtf8)
 import           Network.Mail.Mime       (Mail (..))
 import           Plow.Email.Lens         (eventEntries_, stateChangeMsg_,
@@ -61,6 +62,63 @@ postEmailR = do
         connection <- liftIO getConnection
         processAlarmRunners (eventEntriesToAlarmRunners ees) connection ees
 
+
+postReportEmailR :: Handler Value
+postReportEmailR = do
+  var <- parseJsonBody :: Handler (Result SimpleMail)
+  case var of
+     (Error f) -> return . toJSON $ f
+     (Success mail) -> do
+        connection <- liftIO getConnection
+        liftIO $ mySimpleMail mail connection
+        return . toJSON $ ()
+
+
+mySimpleMail sm conn = do
+        sMail <- simpleMail
+                  (fromAddress sm)
+                  ( toAddress sm )
+                  ( subject sm )
+                  ( plainText sm)
+                  ( htmlText sm)
+                  ( attachments sm)
+        void $ authenticateMailClient conn
+        processMailAnySender sMail fromAddr toAddr conn
+         where
+           fromAddr = addressEmail . fromAddress $ sm
+           toAddr = addressEmail . toAddress $ sm
+data SimpleMail = SimpleMail {
+               fromAddress  :: Address,
+                toAddress   :: Address,
+                subject     :: Text,
+                plainText   :: TL.Text,
+                htmlText    :: TL.Text,
+                attachments :: [(Text,FilePath)]
+} deriving (Show)
+
+instance FromJSON SimpleMail where
+  parseJSON (Object o) = SimpleMail <$>
+                          ((Address Nothing) <$> (o .: "from" ) ) <*>
+                          ((Address Nothing) <$> (o .: "to" ) ) <*>
+                          o .: "subject" <*>
+                          o .: "plainText" <*>
+                          o .: "htmlText" <*>
+                          o .: "attachments"
+
+  parseJSON _ = fail "Rule expected object received other"
+
+instance ToJSON SimpleMail where
+   toJSON (SimpleMail (Address _ from)
+                      (Address _ to)
+                      subject
+                      plainText
+                      htmlText
+                      attachments ) = object [ "from" .= from
+                                               ,"to".= to
+                                               ,"subject" .= subject
+                                               ,"plainText" .= plainText
+                                               ,"htmlText" .= htmlText
+                                               ,"attachments" .= attachments]
 
 -- ==============Handler Function===========
 
@@ -110,10 +168,13 @@ processAlarmRunner ar connection = do
            void $ traverse (\rm -> sendEmails rm connection) rms
            return ()
 
+
 eventEntriesToAlarmRunners :: [EventEntries] -> [AlarmRunner AnyAlarm AnyCall AnyCount]
 eventEntriesToAlarmRunners s = catMaybes $ decodeAR <$> msgTxt
      where  eventList = s ^.. (traverse . eventEntries_ .folded ) :: [AlarmLogEvent]
             msgTxt = eventList ^.. (traverse  . _EventStateChange . stateChangeMsg_ )
+
+
 
 processAlarmRunners :: [AlarmRunner AnyAlarm AnyCall ct] -> SMTPConnection -> [EventEntries] -> Handler Value
 processAlarmRunners ars connection s = do
