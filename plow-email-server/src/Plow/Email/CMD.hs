@@ -14,6 +14,7 @@ data MyOptions = MyOptions
 
 
 -- Customize your options, including help messages, shortened names, etc.
+
 myProgOpts :: MyOptions
 myProgOpts = MyOptions
     { port = def &= help "use a different port number"
