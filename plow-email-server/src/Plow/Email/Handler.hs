@@ -73,15 +73,16 @@ postReportEmailR = do
         liftIO $ mySimpleMail mail connection
         return . toJSON $ ()
 
-
+mySimpleMail :: SimpleMail -> SMTPConnection -> IO ()
 mySimpleMail sm conn = do
-        sMail <- simpleMail
-                  (fromAddress sm)
-                  ( toAddress sm )
-                  ( subject sm )
-                  ( plainText sm)
-                  ( htmlText sm)
-                  ( attachments sm)
+        sMail' <- simpleMail
+                   (fromAddress sm)
+                   ( toAddress sm )
+                   ( subject sm )
+                   ( plainText sm)
+                   ( htmlText sm)
+                   ( attachments sm)
+        let sMail = sMail' {mailCc = [], mailBcc = [], mailTo=[toAddress sm]}
         void $ authenticateMailClient conn
         processMailAnySender sMail fromAddr toAddr conn
          where
