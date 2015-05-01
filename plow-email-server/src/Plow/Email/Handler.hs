@@ -1,4 +1,3 @@
-
 {- |
 Module      :  Plow.Email.Handler
 Description :  Routes and its implementation
