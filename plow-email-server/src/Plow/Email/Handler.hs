@@ -62,7 +62,7 @@ postEmailR = do
         connection <- liftIO getConnection
         processAlarmRunners (eventEntriesToAlarmRunners ees) connection ees
 
-
+-- | use this function to post a random email to someone
 postReportEmailR :: Handler Value
 postReportEmailR = do
   var <- parseJsonBody :: Handler (Result SimpleMail)
