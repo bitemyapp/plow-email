@@ -22,7 +22,8 @@ Library
                         Plow.Email.Handler
                         Plow.Email.Config
   Build-Depends:        base                    >= 4 && < 5
-                      , lens                    >= 4.4 && < 4.5
+                      , cereal                  >=0.4.0.1 && <0.5.0
+                      , lens                    
                       , mime-mail               >= 0.4.6.2
                       , yesod-core              >= 1.4
                       , HaskellNet              >= 0.4.1
@@ -31,21 +32,23 @@ Library
                       , shakespeare             >= 2.0.1.1
                       , shakespeare-templates   >= 0.0.1
                       , alarm-log-adapter       >= 0.2.1
-                      , alarm-state-types       >= 0.2.1
+                      , alarm-state-types       >= 1.0.0
                       , node-client-configs     >= 0.1.3
-                      , plow-extras-lens        >= 0.1.1
+                      , plow-extras-lens        == 0.1.2
                       , plow-extras-time        >= 0.1.1
                       , lens-aeson              
                       , system-filepath
-                      , aeson
+                      , aeson                   >=0.7.0.6 && <0.10.0
                       , text 
                       , containers
                       , time
                       , yaml
-                      , wreq
+                      , wreq                  
                       , warp
                       , cmdargs
-                                  
+                      , streaming-commons       ==0.1.14.2
+                      , scientific              ==0.3.4.3
+                      , http2                   == 1.3.0            
 
 
 
